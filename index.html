@@ -3,251 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MessiCandy - Match 3 Premium</title>
+    <title>MessiCandy</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            --panel-bg: rgba(255, 255, 255, 0.15);
-            --text-color: #ffffff;
-        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Montserrat', 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: var(--text-color);
+            font-family: sans-serif;
+            background: linear-gradient(135deg, #701c1c, #401050);
+            color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 10px;
         }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .header { text-align: center; margin-bottom: 10px; }
-        .header h1 { 
-            font-size: 2.8rem; 
-            color: #f1c40f; 
-            text-shadow: 3px 3px 0px #c0392b, 5px 5px 15px rgba(0,0,0,0.4);
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-        .stats-container {
-            display: flex;
-            gap: 15px;
+        h1 { color: #f1c40f; margin-bottom: 10px; font-size: 2.2rem; text-shadow: 2px 2px rgba(0,0,0,0.5); }
+        .stats {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
             margin-bottom: 15px;
-            background: var(--panel-bg);
-            padding: 12px 25px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
+            font-weight: bold;
         }
-        .stat-box { font-size: 1.3rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
-        .stat-val { color: #f1c40f; font-size: 1.5rem; }
-        #game-container {
-            position: relative;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border: 2px solid rgba(255,255,255,0.1);
-        }
+        .stats span { color: #f1c40f; }
         #grid {
             display: grid;
-            grid-template-columns: repeat(7, 46px);
-            grid-template-rows: repeat(7, 46px);
-            gap: 6px;
-        }
-        @media (min-width: 450px) {
-            #grid { grid-template-columns: repeat(7, 56px); grid-template-rows: repeat(7, 56px); gap: 8px; }
+            grid-template-columns: repeat(7, 42px);
+            grid-template-rows: repeat(7, 42px);
+            gap: 5px;
+            background: rgba(0,0,0,0.4);
+            padding: 10px;
+            border-radius: 15px;
         }
         .cell {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
+            font-size: 1.8rem;
             user-select: none;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2);
+            -webkit-user-select: none;
         }
-        .cell:active { transform: scale(0.85); }
-        .cell.selected { 
-            background: rgba(255, 255, 255, 0.4); 
-            box-shadow: 0 0 15px #fff, inset 0 -4px 0 rgba(0,0,0,0.1);
-            animation: pulse 1s infinite alternate;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+        .cell.selected {
+            background: rgba(255,255,255,0.4);
+            box-shadow: 0 0 10px #fff;
         }
         .btn {
-            margin-top: 15px;
-            padding: 14px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            transition: all 0.2s ease;
-        }
-        .btn:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .btn-pay { 
-            background: linear-gradient(135deg, #ff007f 0%, #ff5e62 100%); 
+            margin-top: 20px;
+            background: #ff007f;
             color: white;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
         }
-        .btn-pay:hover { filter: brightness(1.1); }
         .modal {
             display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(12, 15, 28, 0.95);
-            border-radius: 22px;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #111;
             padding: 20px;
-            z-index: 10;
-            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #ff007f;
+            z-index: 100;
+            width: 85%;
         }
-        .modal h2 { color: #f1c40f; margin-bottom: 12px; font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .modal p { font-size: 1rem; margin-bottom: 15px; line-height: 1.5; color: #e0e0e0; }
+        .modal h2 { color: #f1c40f; margin-bottom: 10px; }
         .modal input {
-            padding: 12px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #ff5e62;
-            margin-bottom: 12px; width: 85%; text-align: center;
-            background: #ffffff; color: #000000; font-weight: bold;
+            padding: 10px; margin: 10px 0; width: 90%;
+            text-align: center; font-size: 1rem; border-radius: 5px;
         }
         .paypal-link {
-            display: inline-block; 
-            background: linear-gradient(135deg, #0070ba 0%, #1546a0 100%); 
-            color: white;
-            padding: 12px 25px; border-radius: 50px; text-decoration: none;
-            font-weight: bold; margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,112,186,0.4);
-            transition: transform 0.2s;
+            display: inline-block; background: #0070ba; color: white;
+            padding: 10px 20px; border-radius: 20px; text-decoration: none;
+            font-weight: bold; margin-bottom: 10px;
         }
-        .paypal-link:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>MessiCandy</h1>
+    <h1>MessiCandy</h1>
+
+    <div class="stats">
+        Puntos: <span id="score">0</span> | Movimientos: <span id="moves">20</span>
     </div>
 
-    <div class="stats-container">
-        <div class="stat-box">Puntos: <span id="score" class="stat-val">0</span></div>
-        <div class="stat-box">Movimientos: <span id="moves" class="stat-val">20</span></div>
+    <div id="grid"></div>
+
+    <button class="btn" onclick="openShop()">🛒 Tienda: +5 Movimientos (1.99€)</button>
+
+    <div id="modal" class="modal">
+        <h2 id="m-title">Tienda MessiCandy</h2>
+        <p id="m-text">Consigue 5 movimientos extra</p>
+        <a class="paypal-link" target="_blank" href="https://paypal.com">Pagar 1.99€ en PayPal</a>
+        <input type="text" id="code" placeholder="Código de Recibo">
+        <button class="btn" style="margin-top:0; width:90%;" onclick="verify()">Activar Movimientos</button>
+        <button class="btn" style="background:#444; font-size:0.8rem; padding:5px 10px;" onclick="closeModal()">Cerrar</button>
     </div>
-
-    <div id="game-container">
-        <div id="grid"></div>
-
-        <div id="modal" class="modal">
-            <h2 id="modal-title">¡Fin de Movimientos!</h2>
-            <p id="modal-text">¿Quieres seguir jugando?</p>
-            
-            <div id="payment-zone">
-                <a id="paypal-btn" class="paypal-link" target="_blank" href="https://paypal.com">Pagar 1.99€ en PayPal</a>
-                <p style="font-size:0.8rem; color:#bbb; margin-bottom: 12px;">(Tras pagar introduce el código secreto para activar tus movimientos)</p>
-                <input type="text" id="secret-code" placeholder="Código de Recibo">
-                <button class="btn btn-pay" style="margin-top:0; width:85%;" onclick="verifyCode()">Activar 5 Movimientos</button>
-            </div>
-            
-            <button class="btn" style="background:#444; color:white; margin-top:10px; padding:8px 20px; font-size:0.9rem;" onclick="resetGame()">Reiniciar Todo</button>
-        </div>
-    </div>
-
-    <button class="btn btn-pay" onclick="openPaymentModal()">🛒 Tienda: +5 Movimientos (1.99€)</button>
 
     <script>
         const width = 7;
         const grid = document.getElementById('grid');
-        const scoreDisplay = document.getElementById('score');
-        const movesDisplay = document.getElementById('moves');
-        const modal = document.getElementById('modal');
-        
-        // Caramelos más llamativos y reales (Emojis)
-        const candyTypes = ['🍬', '🍭', '🍫', '🍩', '🍪'];
+        const candies = ['🍬', '🍭', '🍫', '🍩', '🍪'];
         let board = [];
         let score = 0;
         let moves = 20;
-        let selectedCell = null;
+        let firstClick = null;
 
-        function createBoard() {
+        function start() {
             grid.innerHTML = '';
             board = [];
             for (let i = 0; i < width * width; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                cell.setAttribute('id', i);
-                let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
-                cell.innerText = randomCandy;
+                cell.id = i;
+                cell.innerText = candies[Math.floor(Math.random() * candies.length)];
+                cell.onclick = clickCell;
                 grid.appendChild(cell);
                 board.push(cell);
-
-                cell.addEventListener('click', selectCell);
             }
-            checkMatches();
+            match();
         }
 
-        function selectCell() {
+        function clickCell() {
             if (moves <= 0) return;
-            if (!selectedCell) {
-                selectedCell = this;
+            if (!firstClick) {
+                firstClick = this;
                 this.classList.add('selected');
             } else {
-                let id1 = parseInt(selectedCell.id);
+                let id1 = parseInt(firstClick.id);
                 let id2 = parseInt(this.id);
-                
-                const validMoves = [id1 - 1, id1 + 1, id1 - width, id1 + width];
-                const isAdjacent = validMoves.includes(id2);
+                let valid = [id1-1, id1+1, id1-width, id1+width];
 
-                if (isAdjacent) {
-                    let temp = selectedCell.innerText;
-                    selectedCell.innerText = this.innerText;
-                    this.innerText = temp;
-
+                if (valid.includes(id2)) {
+                    let tmp = firstClick.innerText;
+                    firstClick.innerText = this.innerText;
+                    this.innerText = tmp;
                     moves--;
-                    movesDisplay.innerText = moves;
-
-                    checkMatches();
-                    if (moves <= 0) showGameOver();
+                    document.getElementById('moves').innerText = moves;
+                    match();
+                    if (moves <= 0) over();
                 }
-
-                selectedCell.classList.remove('selected');
-                selectedCell = null;
+                firstClick.classList.remove('selected');
+                firstClick = null;
             }
         }
 
-        function checkMatches() {
-            let hasMatches = false;
+        function match() {
+            let found = false;
             for (let i = 0; i < 49; i++) {
                 if (i % width < 5) {
-                    let rowCheck = [i, i+1, i+2];
-                    let decidedCandy = board[i].innerText;
-                    if (decidedCandy && rowCheck.every(index => board[index].innerText === decidedCandy)) {
-                        score += 30;
-                        rowCheck.forEach(index => board[index].innerText = '');
-                        hasMatches = true;
+                    if (board[i].innerText && board[i].innerText === board[i+1].innerText && board[i].innerText === board[i+2].innerText) {
+                        score += 30; board[i].innerText = ''; board[i+1].innerText = ''; board[i+2].innerText = ''; found = true;
+                    }
+                }
+                if (i < 35) {
+                    if (board[i].innerText && board[i].innerText === board[i+width].innerText && board[i].innerText === board[i+width*2].innerText) {
+                        score += 30; board[i].innerText = ''; board[i+width].innerText = ''; board[i+width*2].innerText = ''; found = true;
                     }
                 }
             }
-            for (let i = 0; i < 35; i++) {
-                let colCheck = [i, i+width, i+width*2];
-                let decidedCandy = board[i].innerText;
-                if (decidedCandy && colCheck.every(index => board[index].innerText === decidedCandy)) {
-                    score += 30;
-                    colCheck.forEach(index => board[index].innerText = '');
+            document.getElementById('score').innerText = score;
+            if (found) setTimeout(fill, 200);
+        }
+
+        function fill() {
+            for (let i = 0; i < 49; i++) {
+                if (board[i].innerText === '') board[i].innerText = candies[Math.floor(Math.random() * candies.length)];
+            }
+            match();
+        }
+
+        function openShop() {
+            document.getElementById('m-title').innerText = "Tienda MessiCandy";
+            document.getElementById('m-text').innerText = "Compra 5 movimientos para ganarle a tus amigos.";
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function over() {
+            document.getElementById('m-title').innerText = "¡Fin del Juego!";
+            document.getElementById('m-text').innerText = `Puntuación: ${score}. ¿Quieres comprar 5 movimientos para continuar?`;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function verify() {
+            if (document.getElementById('code').value.trim().toUpperCase() === 'MESSI777') {
+                moves = 5; document.getElementById('moves').innerText = moves;
+                document.getElementById('modal').style.display = 'none';
+                document.getElementById('code').value = '';
+                alert('¡Movimientos añadidos!');
+            } else { alert('Código incorrecto'); }
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; if(moves<=0) start(); }
+
+        window.onload = start;
+    </script>
+</body>
+</html>
