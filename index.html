@@ -8,8 +8,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: sans-serif;
-            background: linear-gradient(135deg, #701c1c, #401050);
-            color: white;
+            background: linear-gradient(135deg, #1d2b64, #f8cdda);
+            color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -17,27 +17,42 @@
             justify-content: center;
             padding: 10px;
         }
-        h1 { color: #f1c40f; margin-bottom: 10px; font-size: 2.2rem; text-shadow: 2px 2px rgba(0,0,0,0.5); }
+        h1 { color: #f1c40f; margin-bottom: 5px; font-size: 2.5rem; text-shadow: 2px 2px rgba(0,0,0,0.6); }
+        .level-badge {
+            background: #e74c3c; padding: 4px 15px; border-radius: 15px;
+            font-weight: bold; font-size: 0.9rem; margin-bottom: 10px;
+        }
         .stats {
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
             padding: 10px 20px;
             border-radius: 20px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 1.2rem;
             font-weight: bold;
+            width: 100%; max-width: 330px;
+            display: flex; justify-content: space-between;
         }
         .stats span { color: #f1c40f; }
+        .progress-container {
+            width: 100%; max-width: 330px; background: #444;
+            border-radius: 10px; height: 12px; margin-bottom: 15px; overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            width: 0%; height: 100%; transition: width 0.3s ease;
+        }
         #grid {
             display: grid;
             grid-template-columns: repeat(7, 42px);
             grid-template-rows: repeat(7, 42px);
             gap: 5px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.6);
             padding: 10px;
             border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
         }
         .cell {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -45,20 +60,23 @@
             font-size: 1.8rem;
             user-select: none;
             -webkit-user-select: none;
+            cursor: pointer;
         }
         .cell.selected {
             background: rgba(255,255,255,0.4);
             box-shadow: 0 0 10px #fff;
         }
         .btn {
-            margin-top: 20px;
-            background: #ff007f;
+            margin-top: 15px;
+            background: #e91e63;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; max-width: 330px;
         }
         .modal {
             display: none;
@@ -69,41 +87,52 @@
             padding: 20px;
             border-radius: 15px;
             text-align: center;
-            border: 2px solid #ff007f;
+            border: 2px solid #009ee3;
             z-index: 100;
-            width: 85%;
+            width: 85%; max-width: 320px;
         }
         .modal h2 { color: #f1c40f; margin-bottom: 10px; }
         .modal input {
-            padding: 10px; margin: 10px 0; width: 90%;
+            padding: 10px; margin: 12px 0; width: 90%;
             text-align: center; font-size: 1rem; border-radius: 5px;
+            color: #000; font-weight: bold;
         }
-        .paypal-link {
-            display: inline-block; background: #0070ba; color: white;
-            padding: 10px 20px; border-radius: 20px; text-decoration: none;
-            font-weight: bold; margin-bottom: 10px;
+        .mp-link {
+            display: inline-block; background: #009ee3; color: white;
+            padding: 12px 24px; border-radius: 20px; text-decoration: none;
+            font-weight: bold; margin-bottom: 10px; width: 90%;
         }
     </style>
 </head>
 <body>
 
     <h1>MessiCandy</h1>
+    <div class="level-badge">Nivel <span id="lbl-level">1</span></div>
 
     <div class="stats">
-        Puntos: <span id="score">0</span> | Movimientos: <span id="moves">20</span>
+        <div>Pts: <span id="score">0</span>/500</div>
+        <div>Movs: <span id="moves">20</span></div>
+    </div>
+
+    <div class="progress-container">
+        <div id="progress" class="progress-fill"></div>
     </div>
 
     <div id="grid"></div>
 
-    <button class="btn" onclick="openShop()">🛒 Tienda: +5 Movimientos (1.99€)</button>
+    <button class="btn" onclick="openShop()">🛒 Tienda: +5 Movimientos</button>
 
     <div id="modal" class="modal">
         <h2 id="m-title">Tienda MessiCandy</h2>
         <p id="m-text">Consigue 5 movimientos extra</p>
-        <a class="paypal-link" target="_blank" href="https://paypal.com">Pagar 1.99€ en PayPal</a>
-        <input type="text" id="code" placeholder="Código de Recibo">
-        <button class="btn" style="margin-top:0; width:90%;" onclick="verify()">Activar Movimientos</button>
-        <button class="btn" style="background:#444; font-size:0.8rem; padding:5px 10px;" onclick="closeModal()">Cerrar</button>
+        
+        <!-- Tu Link Real y Verificado de Mercado Pago -->
+        <a class="mp-link" target="_blank" href="https://mpago.la">Pagar con Mercado Pago</a>
+        
+        <p style="font-size:0.8rem; color:#aaa;">(Tras abonar, escribe el código secreto de tu recibo)</p>
+        <input type="text" id="code" placeholder="Código Secreto">
+        <button class="btn" style="margin-top:0; width:90%; background:#009ee3;" onclick="verify()">Activar Movimientos</button>
+        <button class="btn" style="background:#444; font-size:0.8rem; padding:5px 10px; width:90%;" onclick="closeModal()">Cerrar</button>
     </div>
 
     <script>
@@ -113,6 +142,8 @@
         let board = [];
         let score = 0;
         let moves = 20;
+        let level = 1;
+        let targetScore = 500;
         let firstClick = null;
 
         function start() {
@@ -147,7 +178,7 @@
                     moves--;
                     document.getElementById('moves').innerText = moves;
                     match();
-                    if (moves <= 0) over();
+                    if (moves <= 0 && score < targetScore) over();
                 }
                 firstClick.classList.remove('selected');
                 firstClick = null;
@@ -168,7 +199,16 @@
                     }
                 }
             }
+            
             document.getElementById('score').innerText = score;
+            let percent = Math.min((score / targetScore) * 100, 100);
+            document.getElementById('progress').style.width = percent + '%';
+
+            if (score >= targetScore) {
+                setTimeout(nextLevel, 400);
+                return;
+            }
+
             if (found) setTimeout(fill, 200);
         }
 
@@ -179,15 +219,27 @@
             match();
         }
 
+        function nextLevel() {
+            level++;
+            score = 0;
+            moves = 20;
+            alert('¡EXCELENTE! Avanzaste al Nivel ' + level);
+            document.getElementById('lbl-level').innerText = level;
+            document.getElementById('score').innerText = score;
+            document.getElementById('moves').innerText = moves;
+            document.getElementById('progress').style.width = '0%';
+            start();
+        }
+
         function openShop() {
             document.getElementById('m-title').innerText = "Tienda MessiCandy";
-            document.getElementById('m-text').innerText = "Compra 5 movimientos para ganarle a tus amigos.";
+            document.getElementById('m-text').innerText = "Adquiere 5 movimientos extra con Mercado Pago.";
             document.getElementById('modal').style.display = 'block';
         }
 
         function over() {
-            document.getElementById('m-title').innerText = "¡Fin del Juego!";
-            document.getElementById('m-text').innerText = `Puntuación: ${score}. ¿Quieres comprar 5 movimientos para continuar?`;
+            document.getElementById('m-title').innerText = "¡Fin de Movimientos!";
+            document.getElementById('m-text').innerText = `Te faltaron puntos para ganar. ¿Quieres comprar 5 movimientos para continuar?`;
             document.getElementById('modal').style.display = 'block';
         }
 
@@ -196,13 +248,13 @@
                 moves = 5; document.getElementById('moves').innerText = moves;
                 document.getElementById('modal').style.display = 'none';
                 document.getElementById('code').value = '';
-                alert('¡Movimientos añadidos!');
-            } else { alert('Código incorrecto'); }
+                alert('¡Movimientos añadidos! Que te diviertas.');
+            } else { alert('Código incorrecto. Verifica tu pago.'); }
         }
 
-        function closeModal() { document.getElementById('modal').style.display = 'none'; if(moves<=0) start(); }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; if(moves<=0) { level=1; score=0; moves=20; document.getElementById('lbl-level').innerText=level; start(); } }
 
-        window.onload = start;
+        start();
     </script>
 </body>
 </html>
