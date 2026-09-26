@@ -1,110 +1,144 @@
-html
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MessiCandy - Match 3</title>
+    <title>MessiCandy - Match 3 Premium</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --panel-bg: rgba(255, 255, 255, 0.1);
+            --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            --panel-bg: rgba(255, 255, 255, 0.15);
             --text-color: #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
-        .header { text-align: center; margin-bottom: 15px; }
-        .header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); color: #f1c40f; }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .header { text-align: center; margin-bottom: 10px; }
+        .header h1 { 
+            font-size: 2.8rem; 
+            color: #f1c40f; 
+            text-shadow: 3px 3px 0px #c0392b, 5px 5px 15px rgba(0,0,0,0.4);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
         .stats-container {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 15px;
             background: var(--panel-bg);
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            border-radius: 50px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .stat-box { font-size: 1.2rem; font-weight: bold; }
-        .stat-val { color: #f1c40f; }
+        .stat-box { font-size: 1.3rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .stat-val { color: #f1c40f; font-size: 1.5rem; }
         #game-container {
             position: relative;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
         }
         #grid {
             display: grid;
-            grid-template-columns: repeat(7, 45px);
-            grid-template-rows: repeat(7, 45px);
-            gap: 4px;
+            grid-template-columns: repeat(7, 46px);
+            grid-template-rows: repeat(7, 46px);
+            gap: 6px;
         }
         @media (min-width: 450px) {
-            #grid { grid-template-columns: repeat(7, 55px); grid-template-rows: repeat(7, 55px); gap: 6px; }
+            #grid { grid-template-columns: repeat(7, 56px); grid-template-rows: repeat(7, 56px); gap: 8px; }
         }
         .cell {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 2rem;
             cursor: pointer;
-            transition: transform 0.1s ease;
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
             user-select: none;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2);
         }
-        .cell:active { transform: scale(0.9); }
-        .cell.selected { background: rgba(255, 255, 255, 0.3); box-shadow: 0 0 10px #fff; }
+        .cell:active { transform: scale(0.85); }
+        .cell.selected { 
+            background: rgba(255, 255, 255, 0.4); 
+            box-shadow: 0 0 15px #fff, inset 0 -4px 0 rgba(0,0,0,0.1);
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
         .btn {
             margin-top: 15px;
-            padding: 12px 25px;
-            font-size: 1rem;
+            padding: 14px 30px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
-            border-radius: 25px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-pay { background: #e91e63; color: white; }
-        .btn-pay:hover { background: #c2185b; }
+        .btn:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .btn-pay { 
+            background: linear-gradient(135deg, #ff007f 0%, #ff5e62 100%); 
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-pay:hover { filter: brightness(1.1); }
         .modal {
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            border-radius: 15px;
+            background: rgba(12, 15, 28, 0.95);
+            border-radius: 22px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 20px;
             z-index: 10;
+            backdrop-filter: blur(5px);
         }
-        .modal h2 { color: #f1c40f; margin-bottom: 15px; }
-        .modal p { font-size: 1rem; margin-bottom: 15px; line-height: 1.4; }
+        .modal h2 { color: #f1c40f; margin-bottom: 12px; font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .modal p { font-size: 1rem; margin-bottom: 15px; line-height: 1.5; color: #e0e0e0; }
         .modal input {
-            padding: 8px; font-size: 1rem; border-radius: 5px; border: none;
-            margin-bottom: 10px; width: 80%; text-align: center;
+            padding: 12px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #ff5e62;
+            margin-bottom: 12px; width: 85%; text-align: center;
+            background: #ffffff; color: #000000; font-weight: bold;
         }
         .paypal-link {
-            display: inline-block; background: #0070ba; color: white;
-            padding: 10px 20px; border-radius: 20px; text-decoration: none;
+            display: inline-block; 
+            background: linear-gradient(135deg, #0070ba 0%, #1546a0 100%); 
+            color: white;
+            padding: 12px 25px; border-radius: 50px; text-decoration: none;
             font-weight: bold; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,112,186,0.4);
+            transition: transform 0.2s;
         }
+        .paypal-link:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -121,23 +155,22 @@ html
     <div id="game-container">
         <div id="grid"></div>
 
-        <!-- Ventana de Pago / Fin de Juego -->
         <div id="modal" class="modal">
             <h2 id="modal-title">¡Fin de Movimientos!</h2>
             <p id="modal-text">¿Quieres seguir jugando?</p>
             
             <div id="payment-zone">
-                <a id="paypal-btn" class="paypal-link" target="_blank" href="https://www.paypal.com/paypalme/LuisGabrielOliz/1.99eur">Pagar 1.99€ en PayPal</a>
-                <p style="font-size:0.8rem; color:#aaa;">(Tras pagar introduce el código secreto para activar tus movimientos)</p>
-                <input type="text" id="secret-code" placeholder="Introduce el Código Secreto">
-                <button class="btn btn-pay" onclick="verifyCode()">Activar 5 Movimientos</button>
+                <a id="paypal-btn" class="paypal-link" target="_blank" href="https://paypal.com">Pagar 1.99€ en PayPal</a>
+                <p style="font-size:0.8rem; color:#bbb; margin-bottom: 12px;">(Tras pagar introduce el código secreto para activar tus movimientos)</p>
+                <input type="text" id="secret-code" placeholder="Código de Recibo">
+                <button class="btn btn-pay" style="margin-top:0; width:85%;" onclick="verifyCode()">Activar 5 Movimientos</button>
             </div>
             
-            <button class="btn" style="background:#555; color:white; margin-top:5px;" onclick="resetGame()">Reiniciar Todo</button>
+            <button class="btn" style="background:#444; color:white; margin-top:10px; padding:8px 20px; font-size:0.9rem;" onclick="resetGame()">Reiniciar Todo</button>
         </div>
     </div>
 
-    <button class="btn btn-pay" onclick="openPaymentModal()">🛒 Comprar 5 Movimientos (1.99€)</button>
+    <button class="btn btn-pay" onclick="openPaymentModal()">🛒 Tienda: +5 Movimientos (1.99€)</button>
 
     <script>
         const width = 7;
@@ -146,7 +179,8 @@ html
         const movesDisplay = document.getElementById('moves');
         const modal = document.getElementById('modal');
         
-        const candyTypes = ['🔴', '🔵', '🟢', '🟡', '🟣'];
+        // Caramelos más llamativos y reales (Emojis)
+        const candyTypes = ['🍬', '🍭', '🍫', '🍩', '🍪'];
         let board = [];
         let score = 0;
         let moves = 20;
@@ -158,7 +192,6 @@ html
             for (let i = 0; i < width * width; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                cell.setAttribute('draggable', 'true');
                 cell.setAttribute('id', i);
                 let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
                 cell.innerText = randomCandy;
@@ -201,7 +234,6 @@ html
 
         function checkMatches() {
             let hasMatches = false;
-            // Filas
             for (let i = 0; i < 49; i++) {
                 if (i % width < 5) {
                     let rowCheck = [i, i+1, i+2];
@@ -213,47 +245,9 @@ html
                     }
                 }
             }
-            // Columnas
             for (let i = 0; i < 35; i++) {
                 let colCheck = [i, i+width, i+width*2];
                 let decidedCandy = board[i].innerText;
                 if (decidedCandy && colCheck.every(index => board[index].innerText === decidedCandy)) {
                     score += 30;
                     colCheck.forEach(index => board[index].innerText = '');
-                    hasMatches = true;
-                }
-            }
-            scoreDisplay.innerText = score;
-            if (hasMatches) setTimeout(refillBoard, 300);
-        }
-
-        function refillBoard() {
-            for (let i = 0; i < 49; i++) {
-                if (board[i].innerText === '') {
-                    board[i].innerText = candyTypes[Math.floor(Math.random() * candyTypes.length)];
-                }
-            }
-            checkMatches();
-        }
-
-        function showGameOver() {
-            document.getElementById('modal-title').innerText = "¡Fin de Movimientos!";
-            document.getElementById('modal-text').innerText = `Lograste ${score} puntos. ¿Quieres comprar movimientos extra para ganar de inmediato?`;
-            document.getElementById('payment-zone').style.display = 'block';
-            modal.style.display = 'flex';
-        }
-
-        function openPaymentModal() {
-            document.getElementById('modal-title').innerText = "Tienda MessiCandy";
-            document.getElementById('modal-text').innerText = "Obtén 5 movimientos adicionales para no perder tu puntuación alta.";
-            document.getElementById('payment-zone').style.display = 'block';
-            modal.style.display = 'flex';
-        }
-
-        function verifyCode() {
-            const codeInput = document.getElementById('secret-code').value.trim();
-            if (codeInput.toUpperCase() === 'MESSI777') {
-                moves += 5;
-                movesDisplay.innerText = moves;
-
-Usa el código con precaución.
