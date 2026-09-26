@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: sans-serif;
-            /* Fondo dinámico estilo cancha/estadio de fútbol nocturno */
+            /* Fondo de cancha de fútbol */
             background: linear-gradient(rgba(15, 32, 39, 0.85), rgba(32, 58, 67, 0.85)), 
                         url('https://unsplash.com') no-repeat center center fixed;
             background-size: cover;
@@ -53,7 +53,7 @@
             grid-template-columns: repeat(7, 46px);
             grid-template-rows: repeat(7, 46px);
             gap: 5px;
-            /* Tablero simulando césped de cancha */
+            /* Tablero verde césped */
             background: radial-gradient(circle, rgba(39, 174, 96, 0.9), rgba(30, 130, 76, 0.95));
             padding: 10px;
             border-radius: 15px;
@@ -67,7 +67,7 @@
         .cell {
             background: rgba(255,255,255,0.15);
             border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 50%; /* Redondos como pelotas/fichas */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,7 +75,7 @@
             user-select: none;
             -webkit-user-select: none;
             cursor: pointer;
-            transition: transform 0.15s, background-color 0.2s;
+            transition: transform 0.15s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .cell:active { transform: scale(0.9); }
@@ -149,7 +149,6 @@
         <h2 id="m-title">Tienda Oficial</h2>
         <p id="m-text" style="margin-bottom: 15px;">Consigue 5 movimientos extra</p>
         
-        <!-- Link de Mercado Pago directo -->
         <a class="mp-link" target="_blank" rel="noopener noreferrer" href="https://mpago.la">Pagar con Mercado Pago</a>
         
         <p style="font-size:0.8rem; color:#aaa; margin-top: 10px;">(Tras abonar, escribe el código de tu recibo)</p>
@@ -162,11 +161,10 @@
         const width = 7;
         const grid = document.getElementById('grid');
         
-        // Transformamos los caramelos en Jugadores Estrella (Estilo Avatar)
-        // 🔟 Messi, 🧤 Dibu Martínez, 🏃‍♂️ Mbappé, 👑 Neymar, 🤖 Haaland
+        // Elementos del juego (Cracks del fútbol)
         const candies = ['🔟', '🧤', '🏃‍♂️', '👑', '🤖'];
         
-        // Configurador de Niveles de Fútbol
+        // Niveles con sus dificultades
         const nivelesInfo = [
             { name: "Potrero (Nivel 1)", target: 500, moves: 20 },
             { name: "Debut en Primera (Nivel 2)", target: 1200, moves: 18 },
@@ -208,7 +206,7 @@
                 grid.appendChild(cell);
                 board.push(cell);
             }
-            checkMatchesLoop();
+            checkAndExecuteMatches();
         }
 
         function handleTouchStart(e) {
@@ -245,3 +243,11 @@
             let tmp = cell1.innerText;
             
             cell1.innerText = cell2.innerText;
+            cell2.innerText = tmp;
+
+            let hasMatches = checkAndExecuteMatches();
+
+            if (!hasMatches) {
+                setTimeout(() => {
+                    cell2.innerText = cell1.innerText;
+                    cell1.innerText = tmp;
