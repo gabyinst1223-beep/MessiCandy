@@ -8,7 +8,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: sans-serif;
-            /* Fondo de cancha de fútbol */
             background: linear-gradient(rgba(15, 32, 39, 0.85), rgba(32, 58, 67, 0.85)), 
                         url('https://unsplash.com') no-repeat center center fixed;
             background-size: cover;
@@ -53,7 +52,6 @@
             grid-template-columns: repeat(7, 46px);
             grid-template-rows: repeat(7, 46px);
             gap: 5px;
-            /* Tablero verde césped */
             background: radial-gradient(circle, rgba(39, 174, 96, 0.9), rgba(30, 130, 76, 0.95));
             padding: 10px;
             border-radius: 15px;
@@ -75,10 +73,8 @@
             user-select: none;
             -webkit-user-select: none;
             cursor: pointer;
-            transition: transform 0.15s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .cell:active { transform: scale(0.9); }
         .btn {
             margin-top: 15px;
             background: linear-gradient(135deg, #009ee3, #007bb5);
@@ -91,9 +87,7 @@
             box-shadow: 0 5px 15px rgba(0,158,227,0.4);
             width: 100%; max-width: 340px;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .btn:active { transform: scale(0.98); }
         .modal {
             display: none;
             position: fixed;
@@ -118,7 +112,6 @@
             display: inline-block; background: #009ee3; color: white;
             padding: 14px 24px; border-radius: 25px; text-decoration: none;
             font-weight: bold; margin-bottom: 10px; width: 90%;
-            box-shadow: 0 4px 10px rgba(0,158,227,0.3);
         }
         .overlay {
             display: none; position: fixed; top:0; left:0; width:100%; height:100%;
@@ -146,25 +139,22 @@
 
     <div class="overlay" id="overlay"></div>
     <div id="modal" class="modal">
-        <h2 id="m-title">Tienda Oficial</h2>
-        <p id="m-text" style="margin-bottom: 15px;">Consigue 5 movimientos extra</p>
+        <h2>Tienda Oficial</h2>
+        <p style="margin-bottom: 15px;">Consigue 5 movimientos extra</p>
         
         <a class="mp-link" target="_blank" rel="noopener noreferrer" href="https://mpago.la">Pagar con Mercado Pago</a>
         
         <p style="font-size:0.8rem; color:#aaa; margin-top: 10px;">(Tras abonar, escribe el código de tu recibo)</p>
         <input type="text" id="code" placeholder="Código de Validación">
-        <button class="btn" style="margin-top:0; width:90%; background:#2ecc71; box-shadow:0 4px 10px rgba(46,204,113,0.3);" onclick="verify()">Activar Movimientos</button>
-        <button class="btn" style="background:#444; font-size:0.8rem; padding:6px 10px; width:90%; box-shadow:none;" onclick="closeModal()">Volver al Partido</button>
+        <button class="btn" style="margin-top:0; width:90%; background:#2ecc71;" onclick="verify()">Activar Movimientos</button>
+        <button class="btn" style="background:#444; font-size:0.8rem; padding:6px 10px; width:90%;" onclick="closeModal()">Volver al Partido</button>
     </div>
 
     <script>
         const width = 7;
         const grid = document.getElementById('grid');
-        
-        // Elementos del juego (Cracks del fútbol)
         const candies = ['🔟', '🧤', '🏃‍♂️', '👑', '🤖'];
         
-        // Niveles con sus dificultades
         const nivelesInfo = [
             { name: "Potrero (Nivel 1)", target: 500, moves: 20 },
             { name: "Debut en Primera (Nivel 2)", target: 1200, moves: 18 },
@@ -194,6 +184,7 @@
             document.getElementById('score').innerText = score;
             updateProgressBar();
 
+            // Generar celdas de forma limpia sin llamar a validaciones infinitas
             for (let i = 0; i < width * width; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
@@ -206,7 +197,6 @@
                 grid.appendChild(cell);
                 board.push(cell);
             }
-            checkAndExecuteMatches();
         }
 
         function handleTouchStart(e) {
@@ -251,3 +241,18 @@
                 setTimeout(() => {
                     cell2.innerText = cell1.innerText;
                     cell1.innerText = tmp;
+                }, 250);
+            } else {
+                moves--;
+                document.getElementById('moves').innerText = moves;
+                checkGameStatus();
+            }
+        }
+
+        function checkAndExecuteMatches() {
+            let matchFound = false;
+            let toBlast = new Set();
+
+            for (let i = 0; i < 49; i++) {
+                if (i % width < 5) {
+                    let r1 = board[i].innerText;
