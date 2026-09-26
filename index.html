@@ -1,0 +1,434 @@
+Guarda esto como `index.html` y ábrelo en el navegador. No requiere librerías ni recursos externos.
+
+```html
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gem Match — Match-3</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --cell-size: min(11vw, 62px);
+      --gap: 6px;
+      --panel: rgba(255, 255, 255, .11);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 14px;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(ellipse at 15% 15%, #ff7ab64a, transparent 35%),
+        radial-gradient(ellipse at 85% 80%, #47d9ff38, transparent 38%),
+        linear-gradient(135deg, #171335, #28205c 55%, #142d52);
+    }
+
+    .game {
+      width: min(100%, 520px);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(2rem, 8vw, 3rem);
+      letter-spacing: .02em;
+      text-shadow: 0 4px 24px #ff67bd66;
+    }
+
+    .subtitle { margin: 0 0 22px; color: #d8d4f4; }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      min-width: 128px;
+      padding: 10px 18px;
+      border: 1px solid #ffffff26;
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 8px 24px #0002;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-label {
+      display: block;
+      color: #d8d4f4;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .stat strong { font-size: 1.45rem; }
+
+    .board-wrap {
+      position: relative;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 10px;
+      border: 1px solid #ffffff30;
+      border-radius: 20px;
+      background: #100d2bbd;
+      box-shadow: 0 18px 55px #0005, inset 0 1px #ffffff20;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(7, var(--cell-size));
+      grid-template-rows: repeat(7, var(--cell-size));
+      gap: var(--gap);
+      touch-action: manipulation;
+    }
+
+    .gem {
+      display: grid;
+      place-items: center;
+      width: var(--cell-size);
+      height: var(--cell-size);
+      padding: 0;
+      border: 0;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: calc(var(--cell-size) * .62);
+      line-height: 1;
+      background: linear-gradient(145deg, #ffffff20, #00000022);
+      box-shadow: inset 0 1px 2px #ffffff40, 0 4px 10px #0003;
+      transition: transform .16s ease, filter .16s ease, background .16s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .gem:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.15); }
+    .gem.selected {
+      outline: 3px solid #fff;
+      outline-offset: 1px;
+      transform: scale(1.1);
+      filter: brightness(1.3);
+    }
+    .gem.empty { visibility: hidden; pointer-events: none; }
+    .gem.matched { animation: pop .2s ease forwards; }
+
+    @keyframes pop {
+      to { transform: scale(.2) rotate(35deg); opacity: 0; }
+    }
+
+    .controls { margin-top: 16px; }
+
+    button.action {
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 1px solid #ffffff40;
+      border-radius: 14px;
+      color: #fff;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff5ba8, #8e5dff);
+      box-shadow: 0 8px 22px #a347b955;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    button.action:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    button.action:active { transform: translateY(0); }
+    button.action:disabled { opacity: .55; cursor: default; transform: none; }
+
+    .hint { min-height: 1.4em; margin: 12px 0 0; color: #d8d4f4; font-size: .9rem; }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      border-radius: 20px;
+      background: #100d2bd9;
+      backdrop-filter: blur(8px);
+    }
+
+    .overlay[hidden] { display: none; }
+
+    .end-card {
+      width: min(100%, 300px);
+      padding: 26px 20px;
+      border: 1px solid #ffffff35;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #45327beF, #211b50f2);
+      box-shadow: 0 18px 60px #0007;
+    }
+
+    .end-card h2 { margin: 0 0 8px; font-size: 1.8rem; }
+    .end-card p { margin: 0 0 18px; color: #e2ddff; }
+    .end-card strong { color: #ffe28a; }
+
+    @media (max-width: 390px) {
+      :root { --gap: 4px; }
+      .board-wrap { padding: 7px; }
+      .gem { border-radius: 11px; }
+      .stat { min-width: 112px; padding: 9px 12px; }
+      button.action { padding-inline: 12px; font-size: .9rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <h1>💎 Gem Match</h1>
+    <p class="subtitle">Intercambia gemas y combina tres o más.</p>
+
+    <section class="stats" aria-label="Estado del juego">
+      <div class="stat"><span class="stat-label">Score</span><strong id="score">0</strong></div>
+      <div class="stat"><span class="stat-label">Movimientos</span><strong id="moves">20</strong></div>
+    </section>
+
+    <div class="board-wrap">
+      <div id="board" class="board" role="grid" aria-label="Tablero de gemas"></div>
+      <div id="gameOver" class="overlay" hidden>
+        <div class="end-card">
+          <h2>¡Fin del juego!</h2>
+          <p>Puntuación final: <strong id="finalScore">0</strong></p>
+          <button id="restart" class="action" type="button">Reiniciar juego</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="buyMoves" class="action" type="button">Comprar 5 movimientos extra (+1.99€)</button>
+      <p id="hint" class="hint" aria-live="polite">Elige una gema y luego una adyacente.</p>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const SIZE = 7;
+      const START_MOVES = 20;
+      const TYPES = [
+        { emoji: "🔴", name: "rubí" },
+        { emoji: "🔵", name: "zafiro" },
+        { emoji: "🟢", name: "esmeralda" },
+        { emoji: "🟡", name: "topacio" },
+        { emoji: "🟣", name: "amatista" },
+        { emoji: "🟠", name: "ámbar" }
+      ];
+
+      const boardEl = document.getElementById("board");
+      const scoreEl = document.getElementById("score");
+      const movesEl = document.getElementById("moves");
+      const hintEl = document.getElementById("hint");
+      const overlayEl = document.getElementById("gameOver");
+      const finalScoreEl = document.getElementById("finalScore");
+      const buyButton = document.getElementById("buyMoves");
+      const restartButton = document.getElementById("restart");
+
+      let grid = [];
+      let score = 0;
+      let moves = START_MOVES;
+      let selected = null;
+      let busy = false;
+
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+      const randomType = () => Math.floor(Math.random() * TYPES.length);
+
+      function createBoard() {
+        grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            let type;
+            do {
+              type = randomType();
+            } while (
+              (c >= 2 && grid[r][c - 1] === type && grid[r][c - 2] === type) ||
+              (r >= 2 && grid[r - 1][c] === type && grid[r - 2][c] === type)
+            );
+            grid[r][c] = type;
+          }
+        }
+      }
+
+      function render() {
+        boardEl.replaceChildren();
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const type = grid[r][c];
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "gem";
+            cell.setAttribute("role", "gridcell");
+            cell.setAttribute("aria-label", type === null ? "Vacío" : TYPES[type].name);
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            if (type === null) {
+              cell.classList.add("empty");
+              cell.disabled = true;
+            } else {
+              cell.textContent = TYPES[type].emoji;
+              cell.setAttribute("aria-pressed", String(selected?.r === r && selected?.c === c));
+              if (selected?.r === r && selected?.c === c) cell.classList.add("selected");
+            }
+            boardEl.appendChild(cell);
+          }
+        }
+        scoreEl.textContent = score.toLocaleString("es-ES");
+        movesEl.textContent = moves;
+      }
+
+      function findMatches() {
+        const found = new Set();
+
+        for (let r = 0; r < SIZE; r++) {
+          let start = 0;
+          for (let c = 1; c <= SIZE; c++) {
+            if (c < SIZE && grid[r][c] !== null && grid[r][c] === grid[r][start]) continue;
+            if (grid[r][start] !== null && c - start >= 3) {
+              for (let x = start; x < c; x++) found.add(`${r},${x}`);
+            }
+            start = c;
+          }
+        }
+
+        for (let c = 0; c < SIZE; c++) {
+          let start = 0;
+          for (let r = 1; r <= SIZE; r++) {
+            if (r < SIZE && grid[r][c] !== null && grid[r][c] === grid[start][c]) continue;
+            if (grid[start][c] !== null && r - start >= 3) {
+              for (let y = start; y < r; y++) found.add(`${y},${c}`);
+            }
+            start = r;
+          }
+        }
+        return [...found].map(pos => pos.split(",").map(Number));
+      }
+
+      function adjacent(a, b) {
+        return Math.abs(a.r - b.r) + Math.abs(a.c - b.c) === 1;
+      }
+
+      function swap(a, b) {
+        [grid[a.r][a.c], grid[b.r][b.c]] = [grid[b.r][b.c], grid[a.r][a.c]];
+      }
+
+      async function clearAndDrop(matches) {
+        while (matches.length) {
+          for (const [r, c] of matches) {
+            const cell = boardEl.children[r * SIZE + c];
+            if (cell) cell.classList.add("matched");
+          }
+          await sleep(190);
+
+          for (const [r, c] of matches) {
+            grid[r][c] = null;
+            score += 10;
+          }
+          render();
+          await sleep(100);
+
+          for (let c = 0; c < SIZE; c++) {
+            const remaining = [];
+            for (let r = SIZE - 1; r >= 0; r--) {
+              if (grid[r][c] !== null) remaining.push(grid[r][c]);
+            }
+            for (let r = SIZE - 1, i = 0; r >= 0; r--, i++) {
+              grid[r][c] = i < remaining.length ? remaining[i] : randomType();
+            }
+          }
+          render();
+          await sleep(130);
+          matches = findMatches();
+        }
+      }
+
+      async function handleCell(r, c) {
+        if (busy || moves <= 0) return;
+
+        const current = { r, c };
+        if (!selected) {
+          selected = current;
+          render();
+          return;
+        }
+
+        if (selected.r === r && selected.c === c) {
+          selected = null;
+          render();
+          return;
+        }
+
+        if (!adjacent(selected, current)) {
+          selected = current;
+          render();
+          return;
+        }
+
+        const first = selected;
+        selected = null;
+        busy = true;
+        swap(first, current);
+        render();
+
+        let matches = findMatches();
+        if (!matches.length) {
+          await sleep(220);
+          swap(first, current);
+          render();
+          hintEl.textContent = "Ese intercambio no forma una combinación.";
+        } else {
+          moves--;
+          hintEl.textContent = "¡Buena combinación!";
+          render();
+          await clearAndDrop(matches);
+        }
+
+        busy = false;
+        render();
+        if (moves <= 0) endGame();
+      }
+
+      function endGame() {
+        finalScoreEl.textContent = score.toLocaleString("es-ES");
+        overlayEl.hidden = false;
+        hintEl.textContent = "Partida terminada.";
+      }
+
+      function startGame() {
+        score = 0;
+        moves = START_MOVES;
+        selected = null;
+        busy = false;
+        overlayEl.hidden = true;
+        hintEl.textContent = "Elige una gema y luego una adyacente.";
+        createBoard();
+        render();
+      }
+
+      boardEl.addEventListener("click", event => {
+        const cell = event.target.closest(".gem");
+        if (cell) handleCell(Number(cell.dataset.row), Number(cell.dataset.col));
+      });
+
+      buyButton.addEventListener("click", () => {
+        alert("Aquí se integrará la pasarela de pago para dar ventajas al jugador");
+      });
+
+      restartButton.addEventListener("click", startGame);
+      startGame();
+    })();
+  </script>
+</body>
+</html>
