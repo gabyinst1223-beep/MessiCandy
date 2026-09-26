@@ -8,9 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: sans-serif;
-            background: linear-gradient(rgba(15, 32, 39, 0.85), rgba(32, 58, 67, 0.85)), 
-                        url('https://unsplash.com') no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -20,28 +18,25 @@
             padding: 10px;
             overflow: hidden;
         }
-        h1 { color: #f1c40f; margin-bottom: 5px; font-size: 2.3rem; text-shadow: 2px 2px rgba(0,0,0,0.6); font-style: italic; }
+        h1 { color: #f1c40f; margin-bottom: 5px; font-size: 2.3rem; text-shadow: 2px 2px rgba(0,0,0,0.6); }
         .level-badge {
             background: #e74c3c; padding: 4px 15px; border-radius: 15px;
             font-weight: bold; font-size: 0.9rem; margin-bottom: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .stats {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.5);
             padding: 10px 20px;
             border-radius: 20px;
             margin-bottom: 10px;
             font-size: 1.1rem;
             font-weight: bold;
-            width: 100%; max-width: 340px;
+            width: 100%; max-width: 330px;
             display: flex; justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         .stats span { color: #f1c40f; }
         .progress-container {
-            width: 100%; max-width: 340px; background: #444;
+            width: 100%; max-width: 330px; background: #444;
             border-radius: 10px; height: 12px; margin-bottom: 15px; overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
         .progress-fill {
             background: linear-gradient(90deg, #2ecc71, #27ae60);
@@ -52,84 +47,76 @@
             grid-template-columns: repeat(7, 44px);
             grid-template-rows: repeat(7, 44px);
             gap: 5px;
-            background: radial-gradient(circle, rgba(39, 174, 96, 0.9), rgba(30, 130, 76, 0.95));
+            background: rgba(0,0,0,0.6);
             padding: 10px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             touch-action: none;
-            border: 3px solid #f1c40f;
         }
         @media (min-width: 400px) {
             #grid { grid-template-columns: repeat(7, 46px); grid-template-rows: repeat(7, 46px); }
         }
         .cell {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             user-select: none;
             -webkit-user-select: none;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
         .btn {
             margin-top: 15px;
-            background: linear-gradient(135deg, #009ee3, #007bb5);
+            background: #e91e63;
             color: white;
             border: none;
             padding: 14px 28px;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 25px;
-            box-shadow: 0 5px 15px rgba(0,158,227,0.4);
-            width: 100%; max-width: 340px;
-            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; max-width: 330px;
         }
         .modal {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(17, 17, 17, 0.95);
-            padding: 25px 20px;
-            border-radius: 20px;
+            background: #111;
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
-            border: 3px solid #f1c40f;
+            border: 2px solid #009ee3;
             z-index: 100;
             width: 85%; max-width: 320px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
         .modal h2 { color: #f1c40f; margin-bottom: 10px; }
         .modal input {
-            padding: 12px; margin: 12px 0; width: 90%;
-            text-align: center; font-size: 1rem; border-radius: 8px;
-            border: none; color: #000; font-weight: bold;
+            padding: 10px; margin: 12px 0; width: 90%;
+            text-align: center; font-size: 1rem; border-radius: 5px;
+            color: #000; font-weight: bold;
         }
         .mp-link {
             display: inline-block; background: #009ee3; color: white;
-            padding: 14px 24px; border-radius: 25px; text-decoration: none;
+            padding: 12px 24px; border-radius: 20px; text-decoration: none;
             font-weight: bold; margin-bottom: 10px; width: 90%;
-        }
-        .overlay {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.7); z-index: 99;
         }
     </style>
 </head>
 <body>
 
     <h1>MessiCandy ⚽</h1>
-    <div class="level-badge" id="level-name">Potrero (Nivel 1)</div>
+    <div class="level-badge">Nivel <span id="lbl-level">1</span></div>
 
     <div class="stats">
         <div>Pts: <span id="score">0</span>/<span id="target">500</span></div>
         <div>Movs: <span id="moves">20</span></div>
     </div>
 
-    <div class="progress-container">
+    <div class="progress-container {">
         <div id="progress" class="progress-fill"></div>
     </div>
 
@@ -137,35 +124,37 @@
 
     <button class="btn" onclick="openShop()">🛒 Tienda: +5 Movimientos (0.99)</button>
 
-    <div class="overlay" id="overlay"></div>
     <div id="modal" class="modal">
-        <h2>Tienda Oficial</h2>
-        <p style="margin-bottom: 15px;">Consigue 5 movimientos extra</p>
+        <h2 id="m-title">Tienda MessiCandy</h2>
+        <p id="m-text">Consigue 5 movimientos extra</p>
         
-        <a class="mp-link" target="_blank" rel="noopener noreferrer" href="https://mpago.la">Pagar con Mercado Pago</a>
+        <a class="mp-link" target="_blank" rel="noopener noreferrer" href="https://mpago.la">Pagar 0.99 con Mercado Pago</a>
         
-        <p style="font-size:0.8rem; color:#aaa; margin-top: 10px;">(Tras abonar, escribe el código de tu recibo)</p>
-        <input type="text" id="code" placeholder="Código de Validación">
-        <button class="btn" style="margin-top:0; width:90%; background:#2ecc71;" onclick="verify()">Activar Movimientos</button>
-        <button class="btn" style="background:#444; font-size:0.8rem; padding:6px 10px; width:90%;" onclick="closeModal()">Volver al Partido</button>
+        <p style="font-size:0.8rem; color:#aaa;">(Tras abonar, escribe el código secreto de tu recibo)</p>
+        <input type="text" id="code" placeholder="Código Secreto">
+        <button class="btn" style="margin-top:0; width:90%; background:#009ee3;" onclick="verify()">Activar Movimientos</button>
+        <button class="btn" style="background:#444; font-size:0.8rem; padding:5px 10px; width:90%;" onclick="closeModal()">Cerrar</button>
     </div>
 
     <script>
         const width = 7;
         const grid = document.getElementById('grid');
+        
+        // REEMPLAZADOS: Tus nuevos caramelos de jugadores estrella
         const candies = ['🔟', '🧤', '🏃‍♂️', '👑', '🤖'];
         
-        const nivelesInfo = [
-            { name: "Potrero (Nivel 1)", target: 500, moves: 20 },
-            { name: "Debut en Primera (Nivel 2)", target: 1200, moves: 18 },
-            { name: "Copa Libertadores (Nivel 3)", target: 2000, moves: 15 },
-            { name: "Final del Mundo (Nivel 4)", target: 3500, moves: 12 }
+        // CONFIGURACIÓN DE DIFICULTAD POR NIVEL
+        const nivelesDificultad = [
+            { target: 500, moves: 20 },
+            { target: 1200, moves: 18 },
+            { target: 2000, moves: 15 },
+            { target: 3500, moves: 12 }
         ];
 
         let board = [];
         let score = 0;
         let moves = 20;
-        let currentLevelIndex = 0;
+        let level = 1;
         let targetScore = 500;
         
         let startX, startY, activeCellId = null;
@@ -173,16 +162,17 @@
         function start() {
             grid.innerHTML = '';
             board = [];
-            let nivelActual = nivelesInfo[currentLevelIndex];
             
-            targetScore = nivelActual.target;
-            moves = nivelActual.moves;
-            
-            document.getElementById('level-name').innerText = nivelActual.name;
+            // Asignar dificultad según el nivel actual
+            let configActual = nivelesDificultad[level - 1] || { target: 5000, moves: 10 };
+            targetScore = configActual.target;
+            moves = configActual.moves;
+
+            document.getElementById('lbl-level').innerText = level;
             document.getElementById('target').innerText = targetScore;
             document.getElementById('moves').innerText = moves;
             document.getElementById('score').innerText = score;
-            updateProgressBar();
+            document.getElementById('progress').style.width = '0%';
 
             for (let i = 0; i < width * width; i++) {
                 const cell = document.createElement('div');
@@ -190,12 +180,14 @@
                 cell.id = i;
                 cell.innerText = candies[Math.floor(Math.random() * candies.length)];
                 
+                // Eventos táctiles originales intactos con el [0] que corresponde
                 cell.addEventListener('touchstart', handleTouchStart, {passive: true});
                 cell.addEventListener('touchend', handleTouchEnd, {passive: true});
                 
                 grid.appendChild(cell);
                 board.push(cell);
             }
+            match(true);
         }
 
         function handleTouchStart(e) {
@@ -234,21 +226,22 @@
             cell1.innerText = cell2.innerText;
             cell2.innerText = tmp;
 
-            let hasMatches = checkAndExecuteMatches();
+            let hasMatches = match(false);
 
             if (!hasMatches) {
                 setTimeout(() => {
                     cell2.innerText = cell1.innerText;
                     cell1.innerText = tmp;
+                    match(true);
                 }, 250);
             } else {
                 moves--;
                 document.getElementById('moves').innerText = moves;
-                checkGameStatus();
+                verificarProgreso();
             }
         }
 
-        function checkAndExecuteMatches() {
+        function match(forceRefill) {
             let matchFound = false;
             let toBlast = new Set();
 
@@ -257,3 +250,22 @@
                     let r1 = board[i].innerText;
                     let r2 = board[i+1].innerText;
                     let r3 = board[i+2].innerText;
+                    if (r1 && r1 === r2 && r1 === r3) {
+                        toBlast.add(i); toBlast.add(i+1); toBlast.add(i+2);
+                        matchFound = true;
+                    }
+                }
+            }
+
+            for (let i = 0; i < 35; i++) {
+                let c1 = board[i].innerText;
+                let c2 = board[i+width].innerText;
+                let c3 = board[i+width*2].innerText;
+                if (c1 && c1 === c2 && c1 === c3) {
+                    toBlast.add(i); toBlast.add(i+width); toBlast.add(i+width*2);
+                    matchFound = true;
+                }
+            }
+
+            if (matchFound && !forceRefill) {
+                score += toBlast.size * 10;
