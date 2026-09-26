@@ -116,7 +116,7 @@
         <div>Movs: <span id="moves">20</span></div>
     </div>
 
-    <div class="progress-container {">
+    <div class="progress-container">
         <div id="progress" class="progress-fill"></div>
     </div>
 
@@ -140,10 +140,10 @@
         const width = 7;
         const grid = document.getElementById('grid');
         
-        // REEMPLAZADOS: Tus nuevos caramelos de jugadores estrella
+        // Emojis de jugadores de fútbol
         const candies = ['🔟', '🧤', '🏃‍♂️', '👑', '🤖'];
         
-        // CONFIGURACIÓN DE DIFICULTAD POR NIVEL
+        // Estructura de niveles corregida
         const nivelesDificultad = [
             { target: 500, moves: 20 },
             { target: 1200, moves: 18 },
@@ -163,7 +163,6 @@
             grid.innerHTML = '';
             board = [];
             
-            // Asignar dificultad según el nivel actual
             let configActual = nivelesDificultad[level - 1] || { target: 5000, moves: 10 };
             targetScore = configActual.target;
             moves = configActual.moves;
@@ -180,7 +179,7 @@
                 cell.id = i;
                 cell.innerText = candies[Math.floor(Math.random() * candies.length)];
                 
-                // Eventos táctiles originales intactos con el [0] que corresponde
+                // Eventos táctiles corregidos con índice [0] como los tenías vos
                 cell.addEventListener('touchstart', handleTouchStart, {passive: true});
                 cell.addEventListener('touchend', handleTouchEnd, {passive: true});
                 
@@ -269,3 +268,4 @@
 
             if (matchFound && !forceRefill) {
                 score += toBlast.size * 10;
+                document.getElementById('score').innerText = score;
